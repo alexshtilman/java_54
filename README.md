@@ -8,3 +8,5 @@
 
 in application.properties:
 disable `spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults= false`
+
+https://stackoverflow.com/questions/50480622/jpa-hibernate-select-currval-on-non-existing-sequence-relation
