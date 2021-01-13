@@ -3,3 +3,8 @@
    1. Service: void averagingSubjectMarks()
    1. Data: think of which queries may be applied for that averaging
 1. Write the cross layers Unit tests (Controller, Service, Data) for all methods of the last home works 
+
+# Important
+
+in application.properties:
+disable `spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults= false`
