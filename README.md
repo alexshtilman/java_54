@@ -10,3 +10,12 @@ in application.properties:
 disable `spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults= false`
 
 https://stackoverflow.com/questions/50480622/jpa-hibernate-select-currval-on-non-existing-sequence-relation
+
+## How to test
+1. http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/marks-controller/getDistribution
+1. GET http://localhost:8080/init?n_students=35&n_subjects=20&n_marks=200&uique_marks=false&min_mark=60&max_mark=100
+1. GET http://localhost:8080/marks/distribution?interval=100 - will be excat 200 marks
+1. PUT http://localhost:8080/subjects - will clean all common marks
+1. GET http://localhost:8080/marks/distribution?interval=100 - will be less than 200 marks ( init generate random number of marks
+
+
