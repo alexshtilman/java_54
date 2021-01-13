@@ -8,19 +8,25 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import telran.spring.jpa.dto.IntervalMarks;
+import telran.spring.jpa.dto.IntervalMarksDto;
 import telran.spring.jpa.dto.StudentsSubjectMarks;
 import telran.spring.jpa.entities.Mark;
 
 public interface MarkRepository extends JpaRepository<Mark, Integer> {
 
-	@Query(value = "select mark from marks_subjects " + "where subject=:subject " + "group by mark "
-			+ "order by count(*) desc limit :n_marks", nativeQuery = true)
+	@Query(value = "select mark from marks_subjects where subject=:subject group by mark"
+			+ " order by count(*) desc,mark desc limit :n_marks", nativeQuery = true)
 	List<Integer> findTopMarksEncountered(@Param("n_marks") int nMarks, @Param("subject") String subject);
 
 	@Query(value = "select :interval as interval ," + "m.mark/:interval as intervalNum, "
 			+ "count(*) as countOfOccurencies " + "from marks m group by intervalNum order by 2", nativeQuery = true)
+	// Dto may fail when testing in DB h2...
+	List<IntervalMarks> findIntervalsMarksPG(@Param("interval") int interval);
 
-	List<IntervalMarks> findIntervalsMarks(@Param("interval") int interval);
+	@Query(value = "select mark/:interval * :interval as min, " + ":interval * (mark/:interval + 1) - 1 as max, "
+			+ "count(*) as occurrences " + "from  marks group by min, max order by 1", nativeQuery = true)
+
+	List<IntervalMarksDto> findIntervalsMarks(@Param("interval") int interval);
 
 	@Modifying
 	@Query(value = "DELETE from marks  where stid = " + "(select stid from students where name = :name) and "

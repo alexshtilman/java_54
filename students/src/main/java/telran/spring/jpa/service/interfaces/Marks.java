@@ -2,7 +2,7 @@ package telran.spring.jpa.service.interfaces;
 
 import java.util.List;
 
-import telran.spring.jpa.dto.IntervalMarks;
+import telran.spring.jpa.dto.IntervalMarksDto;
 import telran.spring.jpa.dto.MarkDto;
 import telran.spring.jpa.dto.StudentsSubjectMarks;
 
@@ -13,7 +13,7 @@ public interface Marks {
 
 	List<StudentsSubjectMarks> getAllCountsMarks();
 
-	List<IntervalMarks> getIntervalsMarks(int interval);
+	List<IntervalMarksDto> getIntervalsMarks(int interval);
 
 	void addMark(MarkDto markDto);
 

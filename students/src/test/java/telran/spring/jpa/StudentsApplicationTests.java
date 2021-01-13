@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import telran.spring.jpa.dto.IntervalMarks;
+import telran.spring.jpa.dto.IntervalMarksDto;
 import telran.spring.jpa.dto.StudentRaw;
 import telran.spring.jpa.dto.StudentsMarksCount;
 import telran.spring.jpa.service.interfaces.Marks;
@@ -244,7 +243,6 @@ class StudentsApplicationTests {
 			}
 		}
 
-		@Disabled
 		@Nested
 		class marksController {
 
@@ -252,12 +250,12 @@ class StudentsApplicationTests {
 			@Test
 			@Sql(FILL_TABELS_SQL)
 			void testGetMarksWideSpred() throws Exception {
-				assertGet(MARKS + WIDESPREAD + "/Java?n_marks=3", new ExpectedDto("[45,70,88]", HttpStatus.OK));
+				assertGet(MARKS + WIDESPREAD + "/Java?n_marks=3", new ExpectedDto("[70,45,99]", HttpStatus.OK));
 				List<Integer> topMarks = marks.getTopMarksEncountered(3, "Java");
 				assertEquals(3, topMarks.size());
-				assertEquals(45, topMarks.get(0));
-				assertEquals(70, topMarks.get(1));
-				assertEquals(88, topMarks.get(2));
+				assertEquals(70, topMarks.get(0));
+				assertEquals(45, topMarks.get(1));
+				assertEquals(99, topMarks.get(2));
 			}
 
 			@DisplayName(GET + MARKS + DISTRIBUTION + "/?interval=10")
@@ -265,20 +263,20 @@ class StudentsApplicationTests {
 			@Sql(FILL_TABELS_SQL)
 			void testGetDistribution() throws Exception {
 				assertGet(MARKS + DISTRIBUTION + "/?interval=10",
-						new ExpectedDto("[{\"countOfOccurencies\":2,\"max\":39,\"min\":30},"
-								+ "{\"countOfOccurencies\":5,\"max\":49,\"min\":40},"
-								+ "{\"countOfOccurencies\":2,\"max\":69,\"min\":60},"
-								+ "{\"countOfOccurencies\":4,\"max\":79,\"min\":70},"
-								+ "{\"countOfOccurencies\":5,\"max\":89,\"min\":80},"
-								+ "{\"countOfOccurencies\":2,\"max\":99,\"min\":90},"
-								+ "{\"countOfOccurencies\":2,\"max\":109,\"min\":100}]", HttpStatus.OK));
-				List<IntervalMarks> distribution = marks.getIntervalsMarks(10);
-				assertEquals(3, distribution.size());
+						new ExpectedDto("[{\"occurrences\":2,\"min\":30,\"max\":39},"
+								+ "{\"occurrences\":5,\"min\":40,\"max\":49},"
+								+ "{\"occurrences\":2,\"min\":60,\"max\":69},"
+								+ "{\"occurrences\":4,\"min\":70,\"max\":79},"
+								+ "{\"occurrences\":5,\"min\":80,\"max\":89},"
+								+ "{\"occurrences\":2,\"min\":90,\"max\":99},"
+								+ "{\"occurrences\":2,\"min\":100,\"max\":109}]", HttpStatus.OK));
+				List<IntervalMarksDto> distribution = marks.getIntervalsMarks(10);
+				assertEquals(7, distribution.size());
 
 				int[][] expected = { { 2, 30, 39 }, { 5, 40, 49 }, { 2, 60, 69 }, { 4, 70, 79 }, { 5, 80, 89 },
 						{ 2, 90, 99 }, { 2, 100, 109 } };
 				for (int i = 0; i < expected.length; i++) {
-					assertEquals(expected[i][0], distribution.get(i).getCountOfOccurencies());
+					assertEquals(expected[i][0], distribution.get(i).getOccurrences());
 					assertEquals(expected[i][1], distribution.get(i).getMin());
 					assertEquals(expected[i][2], distribution.get(i).getMax());
 				}
@@ -340,7 +338,6 @@ class StudentsApplicationTests {
 		@Nested
 		class subjectsController {
 
-			@Disabled
 			@DisplayName(PUT + SUBJECTS)
 			@Test
 			@Sql(FILL_TABELS_SQL)
@@ -348,8 +345,10 @@ class StudentsApplicationTests {
 				assertPut(SUBJECTS, new ExpectedDto("", HttpStatus.OK));
 
 				assertGet(STUDENTS + MARKS + COUNT, new ExpectedDto(
-						"[{\"name\":\"Moshe\",\"marksCount\":4}," + "{\"name\":\"Sara\",\"marksCount\":3},"
-								+ "{\"name\":\"Izhak\",\"marksCount\":3}," + "{\"name\":\"Lilit\",\"marksCount\":2}]",
+						"[{\"name\":\"Moshe\",\"marksCount\":4},"
+						+ "{\"name\":\"Izhak\",\"marksCount\":3},"
+						+ "{\"name\":\"Sara\",\"marksCount\":3},"
+						+ "{\"name\":\"Lilit\",\"marksCount\":2}]",
 						HttpStatus.OK));
 				subjects.setAveragingSubjectMarks();
 

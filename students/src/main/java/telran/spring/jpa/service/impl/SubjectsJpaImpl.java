@@ -1,5 +1,6 @@
 package telran.spring.jpa.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,16 +48,21 @@ public class SubjectsJpaImpl implements Subjects {
 	@Override
 	@Transactional
 	public void setAveragingSubjectMarks() {
+		marksRepo.flush();
+
 		List<StudentsSubjectMarks> marks = marksRepo.countAllMarksGroupBySubject();
 		for (StudentsSubjectMarks m : marks) {
 			marksRepo.deleteByStidAndSuid(m.getStid(), m.getSuid());
 		}
+
+		List<Mark> newMarks = new ArrayList<Mark>();
+
 		for (StudentsSubjectMarks m : marks) {
 			Student student = studentsRepo.findById(m.getStid()).orElse(null);
 			Subject subject = subjectsRepo.findById(m.getSuid()).orElse(null);
-			Mark mark = new Mark(student, subject, m.getAvg());
-			marksRepo.save(mark);
+			newMarks.add(new Mark(student, subject, m.getAvg()));
 		}
+		marksRepo.saveAll(newMarks);
 	}
 
 }

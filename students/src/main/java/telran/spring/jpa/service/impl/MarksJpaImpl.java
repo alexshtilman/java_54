@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import telran.spring.jpa.dto.IntervalMarks;
+import telran.spring.jpa.dto.IntervalMarksDto;
 import telran.spring.jpa.dto.MarkDto;
 import telran.spring.jpa.dto.StudentsSubjectMarks;
 import telran.spring.jpa.entities.Mark;
@@ -35,7 +35,7 @@ public class MarksJpaImpl implements Marks {
 	}
 
 	@Override
-	public List<IntervalMarks> getIntervalsMarks(int interval) {
+	public List<IntervalMarksDto> getIntervalsMarks(int interval) {
 		return marks.findIntervalsMarks(interval);
 	}
 

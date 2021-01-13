@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import telran.spring.jpa.dto.IntervalMarks;
+import telran.spring.jpa.dto.IntervalMarksDto;
 import telran.spring.jpa.dto.StudentsSubjectMarks;
 import telran.spring.jpa.service.interfaces.Marks;
 
@@ -32,7 +32,7 @@ public class MarksController {
 	}
 
 	@GetMapping(DISTRIBUTION)
-	public List<IntervalMarks> getDistribution(@RequestParam(name = "interval", defaultValue = "10") int interval) {
+	public List<IntervalMarksDto> getDistribution(@RequestParam(name = "interval", defaultValue = "10") int interval) {
 		return marks.getIntervalsMarks(interval);
 	}
 
